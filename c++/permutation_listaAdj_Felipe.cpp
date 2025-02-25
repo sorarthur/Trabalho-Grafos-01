@@ -76,7 +76,7 @@ public:
             for (int i = 0; i < vertex-1; i++){
                 if (!hasEdge(vertices[i], vertices[i+1])){
                     verify = false;  // If any consecutive vertices are not connected, set verify to false and break
-                    break;
+                    vertex = i;
                 }
             }
 
