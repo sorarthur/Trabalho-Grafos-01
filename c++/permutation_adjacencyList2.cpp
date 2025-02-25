@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -19,6 +20,8 @@ public:
         adjacencyList[v2].push_back(v1);
     }
 
+
+ 
     void printAdjacencyList(){
         for (int i = 0; i < numOfVertex; ++i)
         {
@@ -29,6 +32,59 @@ public:
             }
             cout << endl;
         }
+    }
+
+    bool hasEdge(int v1, int v2){
+        for(int neighbor : adjacencyList[v1]){
+            if (neighbor == v2)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void allCycles(){
+        vector<int> vertices(numOfVertex);
+
+        for (size_t i = 0; i < numOfVertex; i++)
+        {
+            vertices[i] = i;
+        }
+        
+        do
+        {
+            bool isValid = true; // verify if has edge between vi and vi+1
+
+            for (size_t i = 0; i < numOfVertex-1; i++)
+            {
+                if (!hasEdge(vertices[i], vertices[i+1]))
+                {
+                    isValid = false;
+                    break;
+                }
+            }
+
+            if (isValid)
+            {
+                for (size_t i = 0; i < numOfVertex; i++)
+                {                
+                    if (i >= 2)
+                    {
+                        // verify if the last of the sub-graph is the
+                        // first of the graph, when it's true, the sub-graph is a cycle
+                        if (hasEdge(vertices[i], vertices[0]))
+                        {
+                            for (size_t j = 0; j <= i; j++)
+                            {
+                                printf("%c ", 'A' + vertices[j]);
+                            }
+                            cout << endl;
+                        }
+                    }
+                }
+            }
+        } while (next_permutation(vertices.begin(), vertices.end()));
     }
 
 };
@@ -49,7 +105,8 @@ int main(void){
     G.addEdge(3, 5);
     G.addEdge(4, 5);
 
-    G.printAdjacencyList();
+    // G.printAdjacencyList();
 
+    G.allCycles();
     return 0;
 }
