@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <time.h>
 
 #define MAX_VERTICES 100
 #define MAX_CYCLES 1000
@@ -28,7 +29,6 @@ void addEdge(Graph *g, int u, int v) {
 }
 
 bool isSameCycle(int *cycle1, int *cycle2, int length) {
-    // Verifica rotações na ordem normal.
     for (int i = 0; i < length; i++) {
         bool match = true;
         for (int j = 0; j < length; j++) {
@@ -39,7 +39,6 @@ bool isSameCycle(int *cycle1, int *cycle2, int length) {
         }
         if (match) return true;
     }
-    // Verifica rotações na ordem inversa.
     for (int i = 0; i < length; i++) {
         bool match = true;
         for (int j = 0; j < length; j++) {
@@ -53,6 +52,26 @@ bool isSameCycle(int *cycle1, int *cycle2, int length) {
     return false;
 }
 
+void print(Graph *g) {
+    // Imprime cabeçalho (colunas)
+    printf("    ");
+    for (int j = 0; j < g->numVertex; j++) {
+        printf("%c   ", 'a' + j); // imprime a, b, c, d, etc.
+    }
+    printf("\n");
+
+    // Imprime cada linha da matriz
+    for (int i = 0; i < g->numVertex; i++) {
+        // Imprime o rótulo da linha
+        printf("%c  ", 'a' + i);
+        // Imprime os valores da linha (supondo que g->matrix seja uma matriz 2D)
+        for (int j = 0; j < g->numVertex; j++) {
+            printf("%d   ", g->matrix[i][j]);
+        }
+        printf("\n");
+    }
+}
+
 bool isDuplicateCycle(int *newCycle, int length) {
     for (int i = 0; i < cycleCount; i++) {
         if (cycleLengths[i] == length && isSameCycle(cycles[i], newCycle, length)) {
@@ -63,7 +82,6 @@ bool isDuplicateCycle(int *newCycle, int length) {
 }
 
 void normalizeCycle(int *cycle, int length) {
-    // Rotaciona o ciclo para que o vértice de menor valor fique na primeira posição.
     int minIndex = 0;
     for (int i = 1; i < length; i++) {
         if (cycle[i] < cycle[minIndex]) {
@@ -85,8 +103,6 @@ void storeCycle(int length) {
         memcpy(cycles[cycleCount], cycle, length * sizeof(int));
         cycleLengths[cycleCount] = length;
         cycleCount++;
-        printf("Ciclo %d: ", cycleCount);
-        // Imprime o ciclo, adicionando o vértice inicial no final para evidenciar o fechamento.
         for (int i = 0; i < length; i++) {
             printf("%c", 'A' + cycle[i]);
             if (i < length - 1)
@@ -103,7 +119,6 @@ void findCycles(Graph *g, int start, int v, int length) {
     for (int u = 0; u < g->numVertex; u++) {
         if (g->matrix[v][u]) {
             if (u == start && length >= 2) {
-                // Adiciona o vértice inicial para fechar o ciclo
                 path[length + 1] = start;
                 storeCycle(length + 1);
             } else if (!visited[u] && u > start) {
@@ -116,6 +131,7 @@ void findCycles(Graph *g, int start, int v, int length) {
 }
 
 void contarCiclos(Graph *g) {
+    clock_t start_time = clock();
     cycleCount = 0;
     memset(visited, false, sizeof(visited));
     
@@ -123,7 +139,11 @@ void contarCiclos(Graph *g) {
         findCycles(g, i, i, 0);
     }
     
-    printf("Total de ciclos encontrados: %d\n", cycleCount);
+    clock_t end_time = clock();
+    double time_taken = ((double)(end_time - start_time)) / CLOCKS_PER_SEC * 1000000;
+    
+    printf("Total Cycles: %d\n", cycleCount);
+    printf("Execution Time: %.2f microseconds\n", time_taken);
 }
 
 int main(void) {
@@ -142,7 +162,9 @@ int main(void) {
     addEdge(&g, 2, 5);
     addEdge(&g, 3, 5);
     addEdge(&g, 4, 5);
-
+    printf("GRAPH: \n");
+    print(&g);
+    printf("\nCYCLES:\n");
     contarCiclos(&g);
     return 0;
 }
