@@ -28,10 +28,22 @@ void addEdge(Graph *g, int u, int v) {
 }
 
 bool isSameCycle(int *cycle1, int *cycle2, int length) {
+    // Verifica rotações na ordem normal.
     for (int i = 0; i < length; i++) {
         bool match = true;
         for (int j = 0; j < length; j++) {
             if (cycle1[j] != cycle2[(i + j) % length]) {
+                match = false;
+                break;
+            }
+        }
+        if (match) return true;
+    }
+    // Verifica rotações na ordem inversa.
+    for (int i = 0; i < length; i++) {
+        bool match = true;
+        for (int j = 0; j < length; j++) {
+            if (cycle1[j] != cycle2[(i - j + length) % length]) {
                 match = false;
                 break;
             }
@@ -51,6 +63,7 @@ bool isDuplicateCycle(int *newCycle, int length) {
 }
 
 void normalizeCycle(int *cycle, int length) {
+    // Rotaciona o ciclo para que o vértice de menor valor fique na primeira posição.
     int minIndex = 0;
     for (int i = 1; i < length; i++) {
         if (cycle[i] < cycle[minIndex]) {
@@ -65,19 +78,21 @@ void normalizeCycle(int *cycle, int length) {
 }
 
 void storeCycle(int length) {
-    int sortedCycle[MAX_VERTICES];
-    memcpy(sortedCycle, path, length * sizeof(int));
-    normalizeCycle(sortedCycle, length);
-    if (!isDuplicateCycle(sortedCycle, length)) {
-        memcpy(cycles[cycleCount], sortedCycle, length * sizeof(int));
+    int cycle[MAX_VERTICES];
+    memcpy(cycle, path, length * sizeof(int));
+    normalizeCycle(cycle, length);
+    if (!isDuplicateCycle(cycle, length)) {
+        memcpy(cycles[cycleCount], cycle, length * sizeof(int));
         cycleLengths[cycleCount] = length;
         cycleCount++;
-        printf("%d - ", cycleCount);
+        printf("Ciclo %d: ", cycleCount);
+        // Imprime o ciclo, adicionando o vértice inicial no final para evidenciar o fechamento.
         for (int i = 0; i < length; i++) {
-            printf("%c", 'A' + sortedCycle[i]);
-            if (i < length - 1) printf("-");
+            printf("%c", 'A' + cycle[i]);
+            if (i < length - 1)
+                printf("-");
         }
-        printf("\n");
+        printf("-%c\n", 'A' + cycle[0]);
     }
 }
 
@@ -88,6 +103,8 @@ void findCycles(Graph *g, int start, int v, int length) {
     for (int u = 0; u < g->numVertex; u++) {
         if (g->matrix[v][u]) {
             if (u == start && length >= 2) {
+                // Adiciona o vértice inicial para fechar o ciclo
+                path[length + 1] = start;
                 storeCycle(length + 1);
             } else if (!visited[u] && u > start) {
                 findCycles(g, start, u, length + 1);
