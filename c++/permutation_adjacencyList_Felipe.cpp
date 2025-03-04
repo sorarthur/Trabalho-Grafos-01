@@ -90,7 +90,7 @@ public:
                         // Se o ciclo não foi visto antes, adiciona ao conjunto e imprime
                         if (seenCycles.insert(cycleStr).second) {
                             for (size_t i = 0; i < cycle.size(); i++) {
-                                if (i > 0) cout << " - ";
+                                if (i > 0) cout << "-";
                                 cout << (char)('A' + cycle[i]);
                             }
                             cout << endl;
