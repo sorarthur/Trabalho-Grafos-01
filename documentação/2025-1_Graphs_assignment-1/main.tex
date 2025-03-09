@@ -18,9 +18,9 @@
 \usepackage{multirow}
 
 \documentclass{article}
-\usepackage[backend=biber,style=numeric,giveninits=true]{biblatex}
-\addbibresource{refs.bib}
-\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[backend=biber, style=numeric, sorting=none]{biblatex} % Configura o biblatex
+\addbibresource{refs.bib} % Carrega o arquivo .bib
 
 \setcitestyle{square}
 
@@ -188,10 +188,10 @@ While both methods can be adapted for directed graphs, the complexity of handlin
 
 This study compared two methods for cycle enumeration in undirected graphs, highlighting their computational complexity, efficiency, and practical considerations. The permutation-based approach, while theoretically exhaustive, is computationally prohibitive for large graphs. In contrast, the traversal-based approach is significantly more efficient, particularly for sparse graphs. Future work could explore further optimizations, such as parallel processing techniques or hybrid methods combining aspects of both approaches to enhance performance.
 
-\cite{ref1}
-\cite{ref2}
-\cite{ref3}
+Both implementations assume undirected graphs, as edges are added in both directions. To extend them for directed graphs, modifications are required. Specifically, the adjacency matrix and adjacency list representations must ensure that edges are stored only in the intended direction. Additionally, the traversal-based approach (DFS) should be adapted to properly handle directed cycles, while the permutation-based approach must account for cycle directionality when enumerating possible paths. These adjustments would allow the algorithms to effectively analyze cycle enumeration in directed graphs.
 
-\printbibliography[title={References}]
+% Lista todas as referências do arquivo .bib sem precisar de \cite
+\nocite{*} % Inclui todas as entradas do .bib
+\printbibliography[title={References}] % Imprime a bibliografia
 
 \end{document}
